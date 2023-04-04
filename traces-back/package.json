@@ -1,0 +1,32 @@
+{
+  "name": "cookunitytechexercise",
+  "version": "1.0.0",
+  "description": "Technical exercise for CookUnity",
+  "main": "index.js",
+  "scripts": {
+    "test": "jest"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GianFF/CookUnityTechExercise.git"
+  },
+  "author": "GianFF",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GianFF/CookUnityTechExercise/issues"
+  },
+  "homepage": "https://github.com/GianFF/CookUnityTechExercise#readme",
+  "dependencies": {
+    "dotenv": "^16.0.3",
+    "express": "^4.18.2",
+    "mongodb": "^5.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^8.37.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-plugin-import": "^2.27.5",
+    "jest": "^29.5.0",
+    "superagent": "^8.0.9",
+    "supertest": "^6.3.3"
+  }
+}
