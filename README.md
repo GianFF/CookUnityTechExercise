@@ -1,8 +1,6 @@
 # CookUnityTechExercise
 Technical exercise for CookUnity - Senior backend position.
 
----
-
 ## Architectural Decissions
 
 * Docker and Docker Compose for the Data Base and the Client API.

@@ -4,7 +4,8 @@
   "description": "Technical exercise for CookUnity",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "lint": "eslint './src/**/*.js'"
   },
   "repository": {
     "type": "git",

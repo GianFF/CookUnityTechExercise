@@ -64,7 +64,7 @@ class TracesRepository extends Repository {
   }
 
   transform(traces) {
-    return traces.map((trace) => ({}));
+    return traces;
   }
 }
 
