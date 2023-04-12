@@ -6,9 +6,18 @@ describe('Repositories', () => {
   describe('transform', () => {
     describe('Returns a trace with the expected DB schema', () => {
       test('TracesRepository', () => {
-        const [trace] = tracesRepository.transform([traceSample]);
+        const [transformedTrace] = tracesRepository.transform([traceSample]);
 
-        expect(trace).toEqual(traceSample);
+        const expected = {
+          ...traceSample,
+          country: traceSample.name,
+          ip: [traceSample.ip],
+          traced_times: 1,
+        };
+        delete expected.ip;
+        delete expected.name;
+
+        expect(transformedTrace).toEqual(expected);
       });
     });
   });

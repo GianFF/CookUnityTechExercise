@@ -15,7 +15,7 @@ describe('API', () => {
         traceIP: async () => Promise.resolve(traceJSON),
       },
       statistics: {
-        get: async () => Promise.resolve(statistics),
+        getTrace: async () => Promise.resolve(statistics),
       },
     }));
     app = require('../../src/app').app;
@@ -40,7 +40,7 @@ describe('API', () => {
       });
     });
 
-    describe('When success returns the all the information about that IP', () => {
+    describe('When success returns all the information about that IP', () => {
       test('including the IP', async () => {
         const response = await request(app).post('/v1/traces').send({ ip: '190.191.237.90' });
 
@@ -114,29 +114,30 @@ describe('API', () => {
   });
 
   describe('GET /v1/statistics', () => {
-    // describe('When no trace was made', () => {
-    //   test('returns the longest distance from requested traces', async () => {
-    //     const response = await request(app).get('/v1/statistics');
-    //
-    //     expect(response.statusCode).toBe(200);
-    //     const { body } = response;
-    //     expect(body.longest_distance).toEqual({
-    //       country: null,
-    //       value: 0,
-    //     });
-    //   });
-    //
-    //   test('returns the most traced country', async () => {
-    //     const response = await request(app).get('/v1/statistics');
-    //
-    //     expect(response.statusCode).toBe(200);
-    //     const { body } = response;
-    //     expect(body.most_traced).toEqual({
-    //       country: null,
-    //       value: 0,
-    //     });
-    //   });
-    // });
+    describe.skip('When no trace was made', () => {
+      // NOTE: skipped due to a fail given because of mocking
+      test('returns the longest distance from requested traces', async () => {
+        const response = await request(app).get('/v1/statistics');
+
+        expect(response.statusCode).toBe(200);
+        const { body } = response;
+        expect(body.longest_distance).toEqual({
+          country: null,
+          value: 0,
+        });
+      });
+
+      test('returns the most traced country', async () => {
+        const response = await request(app).get('/v1/statistics');
+
+        expect(response.statusCode).toBe(200);
+        const { body } = response;
+        expect(body.most_traced).toEqual({
+          country: null,
+          value: 0,
+        });
+      });
+    });
 
     describe('When at least one trace was made', () => {
       test('returns the longest distance from requested traces', async () => {

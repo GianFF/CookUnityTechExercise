@@ -39,7 +39,7 @@ Technical exercise for CookUnity - Senior backend position.
     {
       "iso": "USD", // ISO code (USD, CAD, ARS)
       "symbol": "$", // Symbol ($, £)
-      "conversion_rate": 1 //Conversion rate from currency to USD
+      "conversion_rate": 1 // Conversion rate from currency to USD
     }
   ],
   "distance_to_usa": 8395.28 // Distance between United States and country of origin (in Kilometers)
@@ -48,7 +48,10 @@ Technical exercise for CookUnity - Senior backend position.
 
 ## Architectural Decisions
 
-* Github Actions for CI/CD
+* Github Actions for CI/CD running workflos on `main` branch.
+  - each commit on `main` will build a new Docker image and push it to the Registry.
+  - each commit on every branch will run tests and linter.
+  - main branch will be protected, restricting devs to merge a broken PR. Thus that, the CD workflow wont build and push a broken image.
 * Jest + Docker and Docker Compose to test the Client API (Integration testing).
 * Node JS with Express and vanilla Javascript to build the Client API.
 * Jest for testing the Client (Unit testing).
@@ -69,24 +72,28 @@ There are different options for the Cloud with pros and cons:
 * Pricing: 
   - TO BE DONE
 
-## API Decisions 
+## API Decisions & Assumptions
 
-There are 2 endpoints:
+### Assumptions:
 
-* `/statistics`
-* `/traces`
+Any IP is static. They change from user to user over time, meaning that an IP from one city can be used by another city the next request.   
+Currency exchange can change from request to request.   
 
-Since we expect too many requests per minute some considerations should be taken:
+### Decisions:
 
-The `traces` endpoint shouldn't calculate all the data each time. The `distance_to_usa` can be calculated only one time and stored in the DB.   
-The other elements in the response may change over time, so those would be taken from the response. 
-
-The `statistics` endpoint shouldn't calculate the response each time neither.   
-Instead, the `traces` endpoint should do it, storing that data in the DB.   
-
-The "Most traced country" should also be stored in the DB:
+The "Most traced country" would be stored in the DB:
 * In order to do that I think the best option is to keep an incremental number in the DB for each traced country.
 * That way the update should be easy to do and the value easy to query.
+
+The "Longest distance from requested traces" should be also stored in the DB.
+
+
+`traces` service must calculate the response each request.   
+When called, it should delegate in another service the calculation of the "Most traced country" and the "Longest distance from requested traces".   
+Delegating to another service makes lighter the amount of processing for this service.
+
+The `statistics` endpoint must not calculate the response per request.   
+It will only query the DB to get the response.   
 
 
 ## Dev Dependencies

@@ -1,0 +1,15 @@
+{
+  "date": "2023-04-12",
+  "historical": true,
+  "info": {
+    "rate": 0.004668,
+    "timestamp": 1681337703
+  },
+  "query": {
+    "amount": 1,
+    "from": "ARS",
+    "to": "USD"
+  },
+  "result": 0.004668,
+  "success": true
+}

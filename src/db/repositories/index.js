@@ -63,8 +63,44 @@ class TracesRepository extends Repository {
     super('traces');
   }
 
+  async mostTraced() {
+    // NOTE - performamce: https://www.mongodb.com/docs/manual/core/aggregation-pipeline-optimization/#-sort----limit-coalescence
+
+    return this.collection()
+      .find({}, { traced_times: 1, country: 1, _id: 0 })
+      .sort({ traced_times: -1 })
+      .limit(1);
+  }
+
+  async longuestDistanceTraced() {
+    // NOTE - performamce: https://www.mongodb.com/docs/manual/core/aggregation-pipeline-optimization/#-sort----limit-coalescence
+
+    return this.collection()
+      .find({}, { distance_to_usa: 1, country: 1, _id: 0 })
+      .sort({ distance_to_usa: -1 })
+      .limit(1);
+  }
+
+  async update(trace, updates) {
+    await this.collection().set(
+      { country: trace.name },
+      updates,
+    );
+  }
+
   transform(traces) {
-    return traces;
+    return traces.map((trace) => {
+      const transformedTrace = {
+        ...trace,
+        country: trace.name,
+        ip: [trace.ip],
+        traced_times: 1,
+      };
+      delete transformedTrace.ip;
+      delete transformedTrace.name;
+
+      return transformedTrace;
+    });
   }
 }
 
