@@ -1,0 +1,10 @@
+{
+  "longest_distance": {
+    "country": null,
+    "value": 0
+  },
+  "most_traced": { 
+    "country": null,
+    "value": 0
+  }
+}

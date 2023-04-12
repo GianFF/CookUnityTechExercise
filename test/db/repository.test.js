@@ -8,7 +8,7 @@ describe('Repositories', () => {
       test('TracesRepository', () => {
         const [trace] = tracesRepository.transform([traceSample]);
 
-        expect(trace).toEqual({});
+        expect(trace).toEqual(traceSample);
       });
     });
   });
