@@ -1,0 +1,44 @@
+version: '3'
+services:
+  # Data base container:
+  mongodb:
+    image: mongodb/mongodb-community-server:latest
+    restart: always
+    environment:
+      # TODO: get from env vars
+      - MONGO_INITDB_ROOT_DATABASE=tracesDB
+      - MONGO_INITDB_ROOT_USERNAME=user
+      - MONGO_INITDB_ROOT_PASSWORD=pass
+    # Copies ./scripts/db/init-mongo.js to specified location
+    volumes:
+      - ./scripts/db/init-mongo.js:/docker-entrypoint-initdb.d/init-mongo.js:ro
+    ports:
+      - 27017:27017
+  # Server container
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    depends_on:
+      - mongodb
+    # Copies working directory (./CoockUnityTechExercise) to specified folder
+    volumes:
+      - $PWD:/CoockUnityTechExercise
+    ports:
+      - 3003:3003
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://user:pass@mongodb:27017
+      - NODE_ENV=production
+  tests:
+    build:
+      context: .
+      dockerfile: ./Dockerfile.test
+    depends_on:
+      - app
+      - mongodb
+    # Copies working directory (./CoockUnityTechExercise) to specified folder
+    volumes:
+      - $PWD:/CoockUnityTechExercise-Test
+    environment:
+      - MONGO_CONNECTION_STRING=mongodb://user:pass@mongodb:27017
+      - NODE_ENV=test

@@ -2,11 +2,8 @@ const axios = require('axios');
 
 class Exchange {
   constructor(APILayerToken) {
-    this.EXCHANGE_RATE_DATA_API = axios.create({
-      baseURL: 'https://api.apilayer.com/exchangerates_data/convert',
-      timeout: 1000,
-      headers: { apikey: APILayerToken },
-    });
+    this.apiKey = APILayerToken;
+    this.apiURL = 'https://api.apilayer.com/exchangerates_data/convert';
   }
 
   /**
@@ -14,7 +11,13 @@ class Exchange {
    * @param {*} currency: the currency to ask about
    */
   async currencyExchangeData(currency) {
-    return this.EXCHANGE_RATE_DATA_API.get(`?to=USD&from=${currency}&amount=1`);
+    // TODO: sorround with TRY-CATCH and throw
+    //    new HTTPError(response.error.data.message, response.status);
+    const headers = {
+      headers: { apikey: this.apiKey },
+    };
+    const response = await axios.get(`${this.apiURL}?to=USD&from=${currency}&amount=1`, headers);
+    return response.data;
   }
 }
 

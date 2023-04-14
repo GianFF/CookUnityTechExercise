@@ -18,6 +18,15 @@ class Repository {
   }
 
   /**
+   * updateQuery should be redefined by subclasess.
+   * It's purpose is to create a query for each repository Update method.
+   */
+  // eslint-disable-next-line no-unused-vars
+  updateQuery(element) {
+    throw Error('Subclass responsibility');
+  }
+
+  /**
    * collection connects to the data base and gets the collection with name this.collectionName
    * @returns the collection for this.collectionName
    */
@@ -28,12 +37,31 @@ class Repository {
   }
 
   /**
-   * insert inserts a document in the collection, making it fit the schema first.
+   * insert inserts documents in the collection, making them fit the schema first.
    * @returns inserted documents
    */
   async insert(elements) {
     const collection = await this.collection();
     return collection.insertMany(this.transform(elements));
+  }
+
+  /**
+   * update updates a document in the collection.
+   */
+  async update(element, updates) {
+    const collection = await this.collection();
+    return collection.updateOne(
+      this.updateQuery(element),
+      { $set: updates },
+    );
+  }
+
+  /**
+   * delete deletes all elements in a given collection.
+   */
+  async delete() {
+    const collection = await this.collection();
+    return collection.deleteMany();
   }
 
   /**
@@ -63,42 +91,53 @@ class TracesRepository extends Repository {
     super('traces');
   }
 
+  /**
+   * mostTraced queries the collection to find the element with the biggest number of traces made.
+   * @returns the most traced element in the collection
+   */
   async mostTraced() {
     // NOTE - performamce: https://www.mongodb.com/docs/manual/core/aggregation-pipeline-optimization/#-sort----limit-coalescence
 
-    return this.collection()
+    const collection = await this.collection();
+    return collection
       .find({}, { traced_times: 1, country: 1, _id: 0 })
       .sort({ traced_times: -1 })
-      .limit(1);
+      .limit(1)
+      .toArray();
   }
 
+  /**
+   * longuestDistanceTraced queries the collection to find the farthest element to USA
+   * @returns the element in the collection with the biggest distance from USA
+   */
   async longuestDistanceTraced() {
     // NOTE - performamce: https://www.mongodb.com/docs/manual/core/aggregation-pipeline-optimization/#-sort----limit-coalescence
 
-    return this.collection()
+    const collection = await this.collection();
+    return collection
       .find({}, { distance_to_usa: 1, country: 1, _id: 0 })
       .sort({ distance_to_usa: -1 })
-      .limit(1);
+      .limit(1)
+      .toArray();
   }
 
-  async update(trace, updates) {
-    await this.collection().set(
-      { country: trace.name },
-      updates,
-    );
+  updateQuery(trace) {
+    return { country: trace.country };
   }
 
   transform(traces) {
-    return traces.map((trace) => {
+    let tracesArray = traces;
+    if (!(traces instanceof Array)) {
+      tracesArray = [traces];
+    }
+    return tracesArray.map((trace) => {
       const transformedTrace = {
         ...trace,
         country: trace.name,
         ip: [trace.ip],
         traced_times: 1,
       };
-      delete transformedTrace.ip;
       delete transformedTrace.name;
-
       return transformedTrace;
     });
   }

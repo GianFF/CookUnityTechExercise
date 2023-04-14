@@ -14,7 +14,10 @@ class IpData {
    * @param {*} ip: the ip to ask about
    */
   async ipData(ip) {
-    return this.IP_DATA_API.get(`${ip}?fields=country,countryCode,lat,lon,currency`);
+    // TODO: sorround with TRY-CATCH and throw
+    //    new HTTPError(response.error.data.message, response.status);
+    const response = await this.IP_DATA_API.get(`${ip}?fields=country,countryCode,lat,lon,currency`);
+    return response.data;
   }
 }
 

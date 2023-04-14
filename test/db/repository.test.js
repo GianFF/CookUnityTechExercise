@@ -14,7 +14,6 @@ describe('Repositories', () => {
           ip: [traceSample.ip],
           traced_times: 1,
         };
-        delete expected.ip;
         delete expected.name;
 
         expect(transformedTrace).toEqual(expected);

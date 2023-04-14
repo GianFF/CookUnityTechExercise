@@ -76,25 +76,23 @@ There are different options for the Cloud with pros and cons:
 
 ### Assumptions:
 
-Any IP is static. They change from user to user over time, meaning that an IP from one city can be used by another city the next request.   
+For the traces response, specifically the "Distance between United States and country of origin (in Kilometers)": it would be calculated using the latitude and longitude provided by the IP Data API, this is because 2 IPs in the same country can have many kilometers of difference.   
 Currency exchange can change from request to request.   
 
 ### Decisions:
+
+`traces` service must calculate the response each request.   
+When called, it should delegate in another service the calculation of the "Most traced country". Delegating to another service makes lighter the amount of processing for this service.
+
+
+The `statistics` endpoint must not calculate the response on each request.   
+It will only query the DB to get the response.   
 
 The "Most traced country" would be stored in the DB:
 * In order to do that I think the best option is to keep an incremental number in the DB for each traced country.
 * That way the update should be easy to do and the value easy to query.
 
 The "Longest distance from requested traces" should be also stored in the DB.
-
-
-`traces` service must calculate the response each request.   
-When called, it should delegate in another service the calculation of the "Most traced country" and the "Longest distance from requested traces".   
-Delegating to another service makes lighter the amount of processing for this service.
-
-The `statistics` endpoint must not calculate the response per request.   
-It will only query the DB to get the response.   
-
 
 ## Dev Dependencies
 
@@ -113,3 +111,12 @@ Code styling:
 * eslint-config-airbnb-base
 * eslint-plugin-import
 
+### API Usage
+
+To start up the App in Production mode, execute: `docker compose -f docker-compose.yml up --build`.
+Then you can use it from Postman or CURL:
+* post /traces --> {ip: 0.0.0.0}
+* get /statistics
+
+To statrt Develop mode, execute: `docker compose -f docker-compose.dev.yml up --build`.
+Then you can use it from Postman or CURL and made any modifications to the code, it will be reloaded.

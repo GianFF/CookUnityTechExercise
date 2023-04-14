@@ -4,49 +4,44 @@ const { CountriesDistances } = require('../services/countriesDistances');
 const { Exchange } = require('../services/exchange');
 const { IpData } = require('../services/ipData');
 const { tracesRepository } = require('../db/repositories');
+const { API_LAYER_EXCHANGE_API_KEY } = require('../config');
 
-const devInjectables = () => {
-  const statistics = new Statistics(tracesRepository);
-  const countriesDistances = new CountriesDistances();
-  const ipData = new IpData('devToken');
-  const exchange = new Exchange('devToken');
-  const traces = new Traces({
-    statistics,
-    ipData,
-    countriesDistances,
-    exchange,
-  });
+// TODO: create an ExchangeService for Test that returns following object
+// return Promise.resolve({
+//   info: {
+//     rate: 0.004689,
+//   },
+// });
 
-  return {
-    traces,
-    statistics,
-    countriesDistances,
-    tracesRepository,
-  };
-};
-
-const prodInjectables = () => {
-  const statistics = new Statistics(tracesRepository);
-  const countriesDistances = new CountriesDistances();
-  const ipData = new IpData('prodToken');
-  const exchange = new Exchange('prodToken');
-  const traces = new Traces({
-    statistics,
-    ipData,
-    countriesDistances,
-    exchange,
-  });
-
-  return {
-    traces,
-    statistics,
-    countriesDistances,
-    tracesRepository,
-  };
-};
+// TODO: create an IpDataService for Test that returns following object
+// return Promise.resolve({{
+//   country: "Argentina",
+//   countryCode: "AR",
+//   lat: -34.7189,
+//   lon: -58.2604,
+//   currency: "ARS"
+// });
 
 const injectables = {
-  get: () => (process.env.NODE_ENV === 'production' ? prodInjectables() : devInjectables()),
+  get: () => {
+    const statistics = new Statistics({ tracesRepository });
+    const countriesDistances = new CountriesDistances();
+    const ipData = new IpData('prodToken');
+    const exchange = new Exchange(API_LAYER_EXCHANGE_API_KEY);
+    const traces = new Traces({
+      statistics,
+      ipData,
+      countriesDistances,
+      exchange,
+    });
+
+    return {
+      traces,
+      statistics,
+      countriesDistances,
+      tracesRepository,
+    };
+  },
 };
 
 module.exports = { injectables };

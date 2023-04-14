@@ -18,8 +18,8 @@ describe('Statistics Service', () => {
     };
     statisticsService = new Statistics({
       tracesRepository: {
-        mostTraced: jest.fn(() => Promise.resolve(mostTraced)),
-        longuestDistanceTraced: jest.fn(() => Promise.resolve(longuestDistance)),
+        mostTraced: jest.fn(() => Promise.resolve([mostTraced])),
+        longuestDistanceTraced: jest.fn(() => Promise.resolve([longuestDistance])),
       },
     });
   });

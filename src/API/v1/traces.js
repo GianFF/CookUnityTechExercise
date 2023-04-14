@@ -1,6 +1,6 @@
 const { HTTPError } = require('../../httpError');
 
-const registerTracesRoutes = (router, injectables) => {
+const registerTracesRoutes = (router, { traces, tracesRepository }) => {
   const validateIP = (req, _, next) => {
     const { ip } = req.body;
     if (!ip) {
@@ -14,8 +14,18 @@ const registerTracesRoutes = (router, injectables) => {
 
   router.post('/traces', [validateIP], async (req, res) => {
     const { ip } = req.body;
-    const trace = await injectables.traces.traceIP(ip);
+    const trace = await traces.traceIP(ip);
     res.json(trace);
+  });
+
+  router.get('/traces', async (req, res) => {
+    const result = await tracesRepository.findBy();
+    res.json(result);
+  });
+
+  router.delete('/traces', async (req, res) => {
+    const result = await tracesRepository.delete();
+    res.json(result);
   });
 };
 
