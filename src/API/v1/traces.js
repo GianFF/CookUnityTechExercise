@@ -1,4 +1,5 @@
-const { HTTPError } = require('../../httpError');
+const { HTTPError } = require('../../errors/httpError');
+const { handleError } = require('../../middlewares/handleError');
 
 const registerTracesRoutes = (router, { traces, tracesRepository }) => {
   const validateIP = (req, _, next) => {
@@ -13,19 +14,29 @@ const registerTracesRoutes = (router, { traces, tracesRepository }) => {
   };
 
   router.post('/traces', [validateIP], async (req, res) => {
-    const { ip } = req.body;
-    const trace = await traces.traceIP(ip);
-    res.json(trace);
+    await handleError(req, res, async () => {
+      const { ip } = req.body;
+      req.logger.log(`POST /traces --> ${ip}`);
+      const trace = await traces.traceIP(ip);
+      req.logger.log(`POST /traces --> ${ip} - response: ${JSON.stringify(trace)}`);
+      res.json(trace);
+    });
   });
 
   router.get('/traces', async (req, res) => {
-    const result = await tracesRepository.findBy();
-    res.json(result);
+    await handleError(req, res, async () => {
+      req.logger.log('GET /traces');
+      const result = await tracesRepository.findBy();
+      res.json(result);
+    });
   });
 
   router.delete('/traces', async (req, res) => {
-    const result = await tracesRepository.delete();
-    res.json(result);
+    await handleError(req, res, async () => {
+      req.logger.log('DELETE /traces');
+      const result = await tracesRepository.delete();
+      res.json(result);
+    });
   });
 };
 

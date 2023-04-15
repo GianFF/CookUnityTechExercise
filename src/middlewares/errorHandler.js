@@ -1,13 +1,14 @@
-const { HTTPError } = require('../httpError');
+const { HTTPError } = require('../errors/httpError');
 
-const errorHandler = (error, _, res, next) => {
-  // console.error(error.stack);
+const errorHandler = (error, req, res, next) => {
   if (error instanceof HTTPError) {
+    req.logger.log(`Status code: ${error.statusCode} - ${error.stack}`);
     res.status(error.statusCode);
     res.json({
       errorMessage: error.message,
     });
   } else {
+    // TODO: handle other kind of errors
     next();
   }
 };

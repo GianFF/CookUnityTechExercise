@@ -120,3 +120,6 @@ Then you can use it from Postman or CURL:
 
 To statrt Develop mode, execute: `docker compose -f docker-compose.dev.yml up --build`.
 Then you can use it from Postman or CURL and made any modifications to the code, it will be reloaded.
+
+To statrt Debug mode, execute: `docker compose -f docker-compose.debug.yml up --build` and then click the Debug button over the `serve` script in the package.json.
+Then you can use the application and add breackpoints in the code.

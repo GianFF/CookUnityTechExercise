@@ -143,6 +143,57 @@ class TracesRepository extends Repository {
   }
 }
 
+/**
+ * Used to mock MongoDB Collections while testing
+ */
+class InMemoryCollection {
+  constructor() {
+    this.inMemoryCollection = [];
+  }
+
+  async insertMany(elements) {
+    this.inMemoryCollection.concat(elements);
+    return Promise.resolve();
+  }
+
+  async updateOne() {
+    return Promise.resolve();
+  }
+
+  async deleteMany() {
+    this.inMemoryCollection = [];
+    return Promise.resolve();
+  }
+
+  find() {
+    return {
+      project: () => ({
+        toArray: async () => (Promise.resolve(this.inMemoryCollection)),
+      }),
+      sort: () => ({
+        limit: () => ({
+          toArray: async () => (Promise.resolve(this.inMemoryCollection)),
+        }),
+      }),
+    };
+  }
+
+  async countDocuments() {
+    return Promise.resolve(this.inMemoryCollection.length);
+  }
+}
+
+class InMemoryTracesRepository extends TracesRepository {
+  /**
+   * Mocks a Mongo DB collection
+   * @returns the collection for this.collectionName
+   */
+  async collection() {
+    return Promise.resolve(new InMemoryCollection());
+  }
+}
+
 module.exports = {
   tracesRepository: new TracesRepository(),
+  inMemoryTracesRepository: new InMemoryTracesRepository(),
 };
