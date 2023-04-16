@@ -1,6 +1,18 @@
 # CookUnityTechExercise
 Technical exercise for CookUnity - Senior backend position.
 
+- [CookUnityTechExercise](#cookunitytechexercise)
+  - [Expected solution](#expected-solution)
+  - [Architectural Decisions](#architectural-decisions)
+  - [API Decisions \& Assumptions](#api-decisions--assumptions)
+    - [Assumptions](#assumptions)
+    - [Decisions](#decisions)
+  - [Dev Dependencies](#dev-dependencies)
+  - [Testing](#testing)
+  - [API Usage](#api-usage)
+
+## Expected solution
+
 `GET /statistics`
 
 ```js
@@ -50,7 +62,7 @@ Technical exercise for CookUnity - Senior backend position.
 
 * Github Actions for CI/CD running workflos on `main` branch.
   - each commit on `main` will build a new Docker image and push it to the Registry.
-  - each commit on every branch will run tests and linter.
+  - each commit on every branch will run tests and linter, also integration_tests which are run using POSTMAN and docker-compose. 
   - main branch will be protected, restricting devs to merge a broken PR. Thus that, the CD workflow wont build and push a broken image.
 * Jest + Docker and Docker Compose to test the Client API (Integration testing).
 * Node JS with Express and vanilla Javascript to build the Client API.
@@ -72,18 +84,24 @@ There are different options for the Cloud with pros and cons:
 * Pricing: 
   - TO BE DONE
 
+* Deploy: 
+  - TO BE DONE: I would like to use Kubernetes locally with minikube to showcase the deploy to the cloud.
+  - The idea was to update the Manifests Docker image tag on each commit to main, this chould be done on the CD-Workflow Github Action.
+  - Once updated, the cluster could take that update and deploy the changes (using some observability mechanism on the manifests repository).
+
 ## API Decisions & Assumptions
 
-### Assumptions:
+### Assumptions
 
-For the traces response, specifically the "Distance between United States and country of origin (in Kilometers)": it would be calculated using the latitude and longitude provided by the IP Data API, this is because 2 IPs in the same country can have many kilometers of difference.   
 Currency exchange can change from request to request.   
 
-### Decisions:
+### Decisions
+
+The APP will be developped as a monolith application but in a way that would leave the door open to extract different micro-services easily in the future.
 
 `traces` service must calculate the response each request.   
 When called, it should delegate in another service the calculation of the "Most traced country". Delegating to another service makes lighter the amount of processing for this service.
-
+The "Distance between United States and country of origin (in Kilometers)" would be calculated using the latitude and longitude provided by the IP Data API.
 
 The `statistics` endpoint must not calculate the response on each request.   
 It will only query the DB to get the response.   
@@ -92,7 +110,10 @@ The "Most traced country" would be stored in the DB:
 * In order to do that I think the best option is to keep an incremental number in the DB for each traced country.
 * That way the update should be easy to do and the value easy to query.
 
-The "Longest distance from requested traces" should be also stored in the DB.
+The "Longest distance from requested traces" should be also stored in the DB. 
+
+The first trace from each country will be stored in the DB and used as the "Distance to USA".
+Another option would be to do an average of all traced IPs from each country to calculate a more accurate distance. To do that, making the `trace.ip` array be an object with IP as key and distance as value would be enough.
 
 ## Dev Dependencies
 
@@ -111,7 +132,11 @@ Code styling:
 * eslint-config-airbnb-base
 * eslint-plugin-import
 
-### API Usage
+## Testing
+
+Go to: https://github.com/GianFF/CookUnityTechExercise/tree/main/test/integration 
+
+## API Usage
 
 To start up the App in Production mode, execute: `docker compose -f docker-compose.yml up --build`.
 Then you can use it from Postman or CURL:
