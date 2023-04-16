@@ -21,9 +21,6 @@ services:
       dockerfile: ./Dockerfile.dev
     depends_on:
       - mongodb
-    # Copies working directory (./CoockUnityTechExercise) to specified folder
-    volumes:
-      - $PWD:/CoockUnityTechExercise-Dev
     ports:
       - 3003:3003
     environment:

@@ -7,7 +7,6 @@ on:
 
 jobs:
 
-  # TODO: add mongo db service
   test:
     timeout-minutes: 10
     runs-on: ubuntu-latest
@@ -34,3 +33,39 @@ jobs:
 
       - name: Run linter
         run: npm run lint
+
+  integration-tests:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-version: [14.15.1]
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+      
+      - name: Start backend
+        uses: isbang/compose-action@v1.4.1
+        with:
+          compose-file: "./docker-compose.dev.yml"
+          down-flags: "--volumes"
+
+      - name: Install Postman CLI
+        run: |
+          curl -o- "https://dl-cli.pstmn.io/install/linux64.sh" | sh
+
+      - name: Login to Postman CLI
+        run: postman login --with-api-key ${{ secrets.POSTMAN_API_KEY }}
+
+      - name: Run API tests
+        run: |
+          postman collection run "18427311-49b25457-f6ca-4c42-a905-509455e6f62f" --integration-id "138502-${{ github.run_id }}"
+
