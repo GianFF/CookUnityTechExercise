@@ -64,30 +64,15 @@ Technical exercise for CookUnity - Senior backend position.
   - each commit on `main` will build a new Docker image and push it to the Registry.
   - each commit on every branch will run tests and linter, also integration_tests which are run using POSTMAN and docker-compose. 
   - main branch will be protected, restricting devs to merge a broken PR. Thus that, the CD workflow wont build and push a broken image.
-* Jest + Docker and Docker Compose to test the Client API (Integration testing).
+* Jest + Docker and Docker Compose to test and the Client API (Integration testing).
 * Node JS with Express and vanilla Javascript to build the Client API.
 * Jest for testing the Client (Unit testing).
 * Eslint to keep code consistency.
+* Docker Images repositories:
+  - [API](https://hub.docker.com/repository/docker/edymberg/cookunity-traces/general)
+  - [Base DB](https://hub.docker.com/repository/docker/edymberg/cookunity-traces-db/general)
 
-There are different options for the Cloud with pros and cons:
-
-* Lambda & API Gateway & DynamoDB.
-  - Can use the [AWS Free Tier](https://aws.amazon.com/free/?p=gsrc&c=ho_bswa)
-  - Lambda functions can be auto scaled in order to fulfill the demand.
-  - Manage the infra as code is something I need to investigate (IAM roles, API Gateway, DynamoDB).
-
-* Kubernetes with Docker & Docker Compose for the MongoDB and the Client API.
-  - It is not cost-less to deploy in the Cloud so I would use a local kubernetes container.
-  - The solution will need to have different resources like Load Balancer, Ingress, and others to fulfill the demand. Compared with Lambdas, it looks more complex.
-  - All the infra can be written in YAML files and managed by devs easily.
-
-* Pricing: 
-  - TO BE DONE
-
-* Deploy: 
-  - TO BE DONE: I would like to use Kubernetes locally with minikube to showcase the deploy to the cloud.
-  - The idea was to update the Manifests Docker image tag on each commit to main, this chould be done on the CD-Workflow Github Action.
-  - Once updated, the cluster could take that update and deploy the changes (using some observability mechanism on the manifests repository).
+Go to: [Architectural Decisions REAMDE](https://github.com/GianFF/CookUnityTechExercise/tree/main/manifests)
 
 ## API Decisions & Assumptions
 
@@ -134,7 +119,7 @@ Code styling:
 
 ## Testing
 
-Go to: https://github.com/GianFF/CookUnityTechExercise/tree/main/test/integration 
+Go to: [Testing REAMDE](https://github.com/GianFF/CookUnityTechExercise/tree/main/test/integration)
 
 ## API Usage
 
@@ -147,4 +132,4 @@ To statrt Develop mode, execute: `docker compose -f docker-compose.dev.yml up --
 Then you can use it from Postman or CURL and made any modifications to the code, it will be reloaded.
 
 To statrt Debug mode, execute: `docker compose -f docker-compose.debug.yml up --build` and then click the Debug button over the `serve` script in the package.json.
-Then you can use the application and add breackpoints in the code.
+Then you can use the application and add breakpoints in the code.

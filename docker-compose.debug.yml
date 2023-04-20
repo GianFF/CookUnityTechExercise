@@ -3,6 +3,7 @@ services:
   # Data base container:
   mongodb:
     image: mongodb/mongodb-community-server:latest
+    # TODO: image: edymberg/cookunity-traces-db:baseDB
     restart: always
     environment:
       # TODO: get from env vars

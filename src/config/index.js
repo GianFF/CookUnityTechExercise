@@ -9,4 +9,5 @@ module.exports = {
   API_LAYER_EXCHANGE_API_KEY: process.env.API_LAYER_EXCHANGE_API_KEY,
   API_LAYER_EXCHANGE_API_KEY_DEV: process.env.API_LAYER_EXCHANGE_API_KEY_DEV,
   NODE_ENV: process.env.NODE_ENV,
+  PORT: process.env.PORT,
 };

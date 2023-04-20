@@ -1,3 +1,5 @@
+# Testing 
+
 ### Integration tests suite
 
 This suite is designed to integrate all elements in the application while hitting the API endpoints.
@@ -8,7 +10,7 @@ DB repositories and Services doing external requests will be supplied by their m
 
 ### Postman integration test suite
 
-This suite lives in Postman and you need to be invited to see it. It is designed to run all tests using the real API and DB, but also all the real components hierarchy.
+[This suite lives in Postman](https://restless-shuttle-7527.postman.co/workspace/My-Workspace~068612f2-c811-4ced-83a5-84f65026cb46/api/330c9d70-b3ad-4b6f-8523-3797618be410) and you need to be invited to see it. It is designed to run all tests using the real API and DB, but also all the real components hierarchy.
 It would be run on each commit by a Github Action using docker-compose to start up the application and hit the API.
 
 These are the tests on Postman and the Github Action output:

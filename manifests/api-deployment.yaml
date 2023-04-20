@@ -1,0 +1,62 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: cookunity-api-deployment
+spec:
+  selector:
+    matchLabels:
+      app: cookunity-api
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: cookunity-api
+    spec:
+      containers:
+        - name: cookunity-api
+          image: "edymberg/cookunity-traces:4e319ab87c9c32af23cf580ca91a33b51ef0fe55"
+          ports:
+            - containerPort: 3003
+              protocol: TCP
+              name: http
+          livenessProbe:
+            timeoutSeconds: 5
+            periodSeconds: 5
+            successThreshold: 1
+            failureThreshold: 5
+            httpGet:
+              path: /v1
+              port: http
+          readinessProbe:
+            timeoutSeconds: 5
+            periodSeconds: 30
+            successThreshold: 1
+            failureThreshold: 5
+            httpGet:
+              path: /v1
+              port: http
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: "PORT"
+              value: "3003"
+            - name: "MONGO_CONNECTION_TIMEOUT"
+              value: "1000"
+            - name: "MONGO_DATABASE_NAME"
+              value: "tracesDB"
+            - name: "MONGO_USERNAME"
+              value: "user"
+            - name: "MONGO_PASSWORD"
+              value: "pass"
+            - name: "MONGO_CONNECTION_STRING"
+              value: "mongodb://user:pass@mongodb-service:27017/tracesDB"
+            - name: "API_LAYER_EXCHANGE_API_KEY"
+              value: "fAyccy7JUQtFAO5O98PPmmCgjdLVC0l3"
+            - name: "API_LAYER_EXCHANGE_API_KEY_DEV"
+              value: "fAyccy7JUQtFAO5O98PPmmCgjdLVC0l3"
+            # TODO: use secrets as follows:
+            # - name: "MONGO_DATABASE_NAME"
+            #   valueFrom:
+            #     secretKeyRef:
+            #       name: mongo-database-name
+            #       key: mongo-database-name

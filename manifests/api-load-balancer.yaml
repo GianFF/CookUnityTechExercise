@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: cookunity-api-service
+spec:
+  type: LoadBalancer
+  selector:
+    app: cookunity-api
+  ports:
+    - port: 3003
+      targetPort: 3003

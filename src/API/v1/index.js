@@ -7,7 +7,7 @@ const initV1 = (injectables) => {
   router.get('/', (req, res) => {
     res.send(`v1 route includes:\n
       - POST /traces.\n
-      - GET /statistics
+      - GET /statistics.\n
     `);
   });
 

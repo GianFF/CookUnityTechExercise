@@ -22,7 +22,15 @@ const mongoClient = {
   async get() {
     if (!this.client) {
       this.client = this.newMongoClient();
-      await this.client.connect();
+
+      try {
+        await this.client.connect();
+      } catch (e) {
+        this.client = null;
+        // TODO: only for debugging purposes, remove later
+        console.log(e);
+        throw e;
+      }
     }
     return this.client;
   },
